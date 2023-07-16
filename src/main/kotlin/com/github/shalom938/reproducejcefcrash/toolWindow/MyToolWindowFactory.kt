@@ -21,8 +21,14 @@ class MyToolWindowFactory : ToolWindowFactory {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val myToolWindow = MyToolWindow(toolWindow)
-        val content = ContentFactory.getInstance().createContent(myToolWindow.getContent(), null, false)
+        val content = ContentFactory.getInstance().createContent(myToolWindow.getContent(), "MyToolWindow", false)
         toolWindow.contentManager.addContent(content)
+
+        val jcefPanel = JCEFContent()
+        val jcefContent = ContentFactory.getInstance().createContent(jcefPanel, "JCEFPanel", false)
+        toolWindow.contentManager.addContent(jcefContent)
+
+
     }
 
     override fun shouldBeAvailable(project: Project) = true
