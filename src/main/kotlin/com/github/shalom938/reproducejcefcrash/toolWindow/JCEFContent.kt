@@ -1,7 +1,7 @@
 package com.github.shalom938.reproducejcefcrash.toolWindow
 
-import com.intellij.ui.jcef.JBCefApp
-import com.intellij.ui.jcef.JBCefBrowserBuilder
+import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
+import com.intellij.openapi.project.Project
 import org.cef.CefApp
 import org.cef.callback.CefCallback
 import org.cef.handler.CefLoadHandler
@@ -13,27 +13,33 @@ import org.cef.network.CefResponse
 import java.awt.BorderLayout
 import java.io.IOException
 import java.io.InputStream
+import javax.swing.JButton
 import javax.swing.JPanel
 import kotlin.math.min
 
-class JCEFContent : JPanel() {
+class JCEFContent(project: Project) : JPanel() {
 
     init {
-        val browser = if (JBCefApp.isSupported()) {
 
-            val jbCefBrowser = JBCefBrowserBuilder()
-                .setUrl("http://jceftest/index.html")
-                .build()
-            registerAppSchemeHandler()
-            jbCefBrowser
-        }else{
-            null
+        val b = JButton("test")
+        b.addActionListener{
+            HTMLEditorProvider.openEditor(project, "test", "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "  <head>\n" +
+                    "    <meta charset=\"UTF-8\" />\n" +
+                    "    <title>JCEF test</title>\n" +
+                    "  </head>\n" +
+                    "  <body>\n" +
+                    "    <p>Digma JCEF Test</p>\n" +
+                    "  </body>\n" +
+                    "</html>")
         }
 
-        browser?.let {
-            layout = BorderLayout()
-            add(it.component,BorderLayout.CENTER)
-        }
+
+        layout = BorderLayout()
+        add(b,BorderLayout.CENTER)
+
+
     }
 
 

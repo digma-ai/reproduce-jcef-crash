@@ -24,7 +24,7 @@ class MyToolWindowFactory : ToolWindowFactory {
         val content = ContentFactory.getInstance().createContent(myToolWindow.getContent(), "MyToolWindow", false)
         toolWindow.contentManager.addContent(content)
 
-        val jcefPanel = JCEFContent()
+        val jcefPanel = JCEFContent(project)
         val jcefContent = ContentFactory.getInstance().createContent(jcefPanel, "JCEFPanel", false)
         toolWindow.contentManager.addContent(jcefContent)
 
