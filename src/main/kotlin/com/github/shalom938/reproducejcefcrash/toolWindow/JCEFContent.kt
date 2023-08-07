@@ -13,31 +13,20 @@ import org.cef.misc.StringRef
 import org.cef.network.CefRequest
 import org.cef.network.CefResponse
 import java.awt.BorderLayout
-import java.awt.CardLayout
 import java.io.IOException
 import java.io.InputStream
-import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JPanel
 import kotlin.math.min
 
 class JCEFContent : JPanel() {
 
     init {
-
-        val cardLayout = CardLayout()
-        val cardsPanel = JPanel(cardLayout)
-        val firstPanel = createFirstPanel()
-        cardsPanel.add(firstPanel,"first")
-        cardLayout.addLayoutComponent(firstPanel,"first")
-
-
         val browser = if (JBCefApp.isSupported()) {
 
             val jbCefBrowser = JBCefBrowserBuilder()
                 .setUrl("http://jceftest/index.html")
+                .setEnableOpenDevToolsMenuItem(false)
                 .build()
-//            registerAppSchemeHandler()
             jbCefBrowser
         }else{
             null
@@ -51,24 +40,10 @@ class JCEFContent : JPanel() {
         }.also { handler ->
             browser?.jbCefClient?.addLifeSpanHandler(handler, browser.cefBrowser)
         }
-
-        browser?.let {
-
-            cardsPanel.add(it.component,"jcef")
-            cardLayout.addLayoutComponent(it.component,"jcef")
-        }
-
-        cardLayout.show(cardsPanel,"first")
-
-
         layout = BorderLayout()
-        val button = JButton("switch")
-        button.addActionListener{
-            cardLayout.next(cardsPanel)
+        browser?.let {
+            add(it.component,BorderLayout.CENTER)
         }
-        add(button,BorderLayout.NORTH)
-        add(cardsPanel,BorderLayout.CENTER)
-
 
     }
 
@@ -81,12 +56,6 @@ class JCEFContent : JPanel() {
         ) { _, _, _, _ -> MyCefResourceHandler() }
     }
 
-
-    private fun createFirstPanel(): JPanel {
-        val panel = JPanel()
-        panel.add(JLabel("first card non jcef"))
-        return panel
-    }
 }
 
 
