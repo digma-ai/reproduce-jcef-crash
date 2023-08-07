@@ -3,7 +3,9 @@ package com.github.shalom938.reproducejcefcrash.toolWindow
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowserBuilder
 import org.cef.CefApp
+import org.cef.browser.CefBrowser
 import org.cef.callback.CefCallback
+import org.cef.handler.CefLifeSpanHandlerAdapter
 import org.cef.handler.CefLoadHandler
 import org.cef.handler.CefResourceHandler
 import org.cef.misc.IntRef
@@ -23,18 +25,29 @@ class JCEFContent : JPanel() {
 
             val jbCefBrowser = JBCefBrowserBuilder()
                 .setUrl("http://jceftest/index.html")
+                .setEnableOpenDevToolsMenuItem(false)
                 .build()
-            registerAppSchemeHandler()
             jbCefBrowser
         }else{
             null
         }
 
+
+        object: CefLifeSpanHandlerAdapter(){
+            override fun onAfterCreated(browser: CefBrowser?) {
+                registerAppSchemeHandler()
+            }
+        }.also { handler ->
+            browser?.jbCefClient?.addLifeSpanHandler(handler, browser.cefBrowser)
+        }
+        layout = BorderLayout()
         browser?.let {
-            layout = BorderLayout()
             add(it.component,BorderLayout.CENTER)
         }
+
     }
+
+
 
 
     private fun registerAppSchemeHandler() {
@@ -42,6 +55,7 @@ class JCEFContent : JPanel() {
             "http", "jceftest"
         ) { _, _, _, _ -> MyCefResourceHandler() }
     }
+
 }
 
 

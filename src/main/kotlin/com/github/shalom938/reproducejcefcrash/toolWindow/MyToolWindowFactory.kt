@@ -20,10 +20,6 @@ class MyToolWindowFactory : ToolWindowFactory {
     }
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val myToolWindow = MyToolWindow(toolWindow)
-        val content = ContentFactory.getInstance().createContent(myToolWindow.getContent(), "MyToolWindow", false)
-        toolWindow.contentManager.addContent(content)
-
         val jcefPanel = JCEFContent()
         val jcefContent = ContentFactory.getInstance().createContent(jcefPanel, "JCEFPanel", false)
         toolWindow.contentManager.addContent(jcefContent)
@@ -32,20 +28,4 @@ class MyToolWindowFactory : ToolWindowFactory {
     }
 
     override fun shouldBeAvailable(project: Project) = true
-
-    class MyToolWindow(toolWindow: ToolWindow) {
-
-        private val service = toolWindow.project.service<MyProjectService>()
-
-        fun getContent() = JBPanel<JBPanel<*>>().apply {
-            val label = JBLabel(MyBundle.message("randomLabel", "?"))
-
-            add(label)
-            add(JButton(MyBundle.message("shuffle")).apply {
-                addActionListener {
-                    label.text = MyBundle.message("randomLabel", service.getRandomNumber())
-                }
-            })
-        }
-    }
 }
